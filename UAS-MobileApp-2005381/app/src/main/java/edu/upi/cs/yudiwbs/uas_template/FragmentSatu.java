@@ -8,17 +8,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import cz.msebera.android.httpclient.Header;
-import cz.msebera.android.httpclient.HttpStatus;
 import edu.upi.cs.yudiwbs.uas_template.databinding.FragmentSatuBinding;
 
 
@@ -52,10 +48,10 @@ public class FragmentSatu extends Fragment {
         binding.button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                binding.tvKeterangan.setText("Tunggu sebentar, loading data harga bitcoin (USD)");
+                binding.tvKeterangan.setText("Sedang Mengambil API, Harap Tunggu");
                 //https://api.coindesk.com/v1/bpi/currentprice.json
                 Log.d("debugyudi","onclick");
-                ApiHargaBitcoin.get("bpi/currentprice.json", null, new JsonHttpResponseHandler() {
+                ApiKalimat.get("advice", null, new JsonHttpResponseHandler() {
                     @Override
                     //hati2 success jsonobjek atau jsonarray
                     public void onSuccess(int statusCode,
@@ -77,17 +73,16 @@ public class FragmentSatu extends Fragment {
                          */
 
                         //ambil USD rate
-                        String rate="";
+                        String kalimat="";
                         try {
-                            JSONObject bpi = response.getJSONObject("bpi");
-                            JSONObject usd = bpi.getJSONObject("USD");
-                            rate = (String) usd.get("rate");
+                            JSONObject slip = (JSONObject) response.get("slip");
+                            kalimat = (String) slip.get("advice");
                         } catch (JSONException e) {
                             e.printStackTrace();
                             Log.e("debugyudi", "msg error" +":" +e.getMessage());
                         }
-                        Log.d("debugyudi", "rate" +":" +rate);
-                        binding.tvKeterangan.setText(rate);
+                        Log.d("debugyudi", "rate" +":");
+                        binding.tvKeterangan.setText(kalimat);
                     }
 
                     public void onSuccess(int statusCode,
